@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STEPAN</title>
+  <script src="https://blick.netlify.app/8.js"></script>
+</head>
+
+<body class="flex flex-col flex-center gap-5 h-screen">
+
+
+  
+  <img width="250" src="emotions/idle.png" alt="person">
+  <h1>нажми</h1>
+  <h3>гучність: 0</h3>
+
+
+
+  <script>
+    var context
+    var analyser
+    var int
+    var img = document.querySelector('img')
+    var h1  = document.querySelector('h1')
+    var h3  = document.querySelector('h3')
+
+    var array = new Uint8Array(1)
+    var speed = 10
+    var words = ['no', 'yes', 'hahaha', 'ny', 'aga', 'ok', 'sho']
+    var ok = true
+    var sound = new Audio;
+
+
+    document.body.addEventListener("click",() => {
+      if (context) return;
+
+      context = new AudioContext();
+      analyser = context.createAnalyser();
+
+      navigator.mediaDevices.getUserMedia({
+        audio: true
+      })
+      .then(stream => {
+        let src = context.createMediaStreamSource(stream);
+        src.connect(analyser);
+        int = setInterval(interval, 1000 / speed)
+      })
+      .catch(() => alert('Виникли проблеми спробуйте пізніше'))
+    })
+
+    function interval() {
+      analyser.getByteFrequencyData(array);
+      vol = array[0];
+
+      if (vol > 10) {
+        h1.innerText = 'слухає'
+        img.src = 'emotions/listen.png'
+        speed = 5
+        clearInterval(int)
+        int = setInterval(interval, 1000 / speed)
+        ok  = true
+      }
+      else say()
+
+      if (vol == 0) {
+        h1.innerText = 'чекає'
+        img.src = 'emotions/idle.png'
+      }
+
+      h3.innerText = `гучність: ${vol}`
+    }
+
+
+    function say() {
+      if (ok) {
+        word = words[Math.floor(Math.random() * words.length)]
+        h1.innerText = word
+
+        if (word === 'yes') {
+          setTimeout(() => img.src = 'emotions/d.png'   , 0)
+          setTimeout(() => img.src = 'emotions/a.png'   , 300)
+          setTimeout(() => img.src = 'emotions/idle.png', 600)
+          sound.src = "sounds/da.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+        else if (word === 'no') {
+          setTimeout(() => img.src = 'emotions/n.png'   , 0)
+          setTimeout(() => img.src = 'emotions/e.png'   , 300)
+          setTimeout(() => img.src = 'emotions/idle.png', 600)
+          sound.src = "sounds/ne.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+        else if (word === 'hahaha') { 
+          setTimeout(() => img.src = 'emotions/d.png'   , 0)
+          setTimeout(() => img.src = 'emotions/a.png'   , 300)
+          setTimeout(() => img.src = 'emotions/idle.png', 900)
+          sound.src = "sounds/hahaha.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+        else if (word === 'ny') {
+          setTimeout(() => img.src = 'emotions/n.png'   , 0)
+          setTimeout(() => img.src = 'emotions/y.png'   , 300)
+          setTimeout(() => img.src = 'emotions/idle.png', 600)
+          sound.src = "sounds/ny.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+        else if (word === 'aga') {
+          setTimeout(() => img.src = 'emotions/a.png'   , 0)
+          setTimeout(() => img.src = 'emotions/d.png'   , 300)
+          setTimeout(() => img.src = 'emotions/a.png'   , 600)
+          setTimeout(() => img.src = 'emotions/idle.png', 900)
+          sound.src = "sounds/aga.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+        else if (word === 'ok') {
+          setTimeout(() => img.src = 'emotions/o.png'   , 0)
+          setTimeout(() => img.src = 'emotions/d.png'   , 300)
+          setTimeout(() => img.src = 'emotions/idle.png', 600)
+          sound.src = "sounds/ok.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+        else if (word === 'sho') {
+          setTimeout(() => img.src = 'emotions/sh.png'  , 0)
+          setTimeout(() => img.src = 'emotions/o.png'   , 300)
+          setTimeout(() => img.src = 'emotions/idle.png', 600)
+          sound.src = "sounds/sho.mp3";
+          sound.currentTime = 0;
+          sound.play();
+        }
+
+        speed = 10
+        clearInterval(int)
+        int = setInterval(interval, 1000 / speed)
+        ok = false
+      }
+    }
+
+  </script>
+</body>
+</html>
